@@ -4,8 +4,24 @@
 \alias{ABCDQR_predict}
 \title{forecasting function}
 \usage{
-ABCDQR_predict(y, u, A, B, C, D, Q, R, m1, P1, nx, ny, nu, u_new, n_ahead,
-  conf_level = 0.95)
+ABCDQR_predict(
+  y,
+  u,
+  A,
+  B,
+  C,
+  D,
+  Q,
+  R,
+  m1,
+  P1,
+  nx,
+  ny,
+  nu,
+  u_new,
+  n_ahead,
+  conf_level = 0.95
+)
 }
 \arguments{
 \item{y}{data}

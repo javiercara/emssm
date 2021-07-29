@@ -18,7 +18,7 @@ ACQR_predict <- function(y,A,C,Q,R,m1,P1,nx,ny,n_ahead,conf_level=0.95){
   nt = ncol(y)
 
   A <- matrix(A, nrow = nx, ncol = nx)
-  C <- matrix(C, nrow=ny, ncol = nx)
+  #C <-
   Q <- matrix(Q, nrow = nx, ncol = nx)
   R <- matrix(R, nrow = ny, ncol = ny)
   x10 <- m1
