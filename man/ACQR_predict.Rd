@@ -13,5 +13,8 @@ ACQR_predict(y, A, C, Q, R, m1, P1, nx, ny, n_ahead, conf_level = 0.95)
 y by rows, m = nrow(y), nt = ncol(y)
 }
 \description{
-forecasting function
+forecasting function for state space model
+  x_{t+1} = Ax_{t} + w_{t}
+  y_{t}   = Cx_{t} + v_{t}
+  cov(w_{t},v_{t}) = [Q 0;0 R]
 }

@@ -4,8 +4,7 @@
 #' Kalman smoother for state space model
 #'   x_{t+1} = Ax_{t} + w_{t}
 #'   y_{t}   = Cx_{t} + v_{t}
-#'
-# '  cov(w_{t},v_{t}) = [Q 0;0 R]
+#'   cov(w_{t},v_{t}) = [Q 0;0 R]
 #'
 #' @param y output data
 #' @export

@@ -10,7 +10,7 @@
 #' @return
 #' y by rows, ny = nrow(y), nt = ncol(y)
 #'
-ABCDQR_em <- function(y,u,Ai,Bi,Ci,Di,Qi,Ri,m1i,P1i,nx,ny,nu,
+ABCDQR_em2 <- function(y,u,Ai,Bi,Ci,Di,Qi,Ri,m1i,P1i,nx,ny,nu,
                     Ae=matrix(1,nx,nx),Be=matrix(1,nx,nu),Ce=matrix(1,ny,nx),De=matrix(1,ny,nu),
                     Qe=matrix(1,nx,nx),Re=matrix(1,ny,ny),m1e=matrix(1,nx,1),P1e=matrix(1,nx,nx),
                     max_iter = 100,tol = 1e-6,txo = FALSE){
@@ -115,14 +115,12 @@ ABCDQR_em <- function(y,u,Ai,Bi,Ci,Di,Qi,Ri,m1i,P1i,nx,ny,nu,
 
     # Matrix AB
     # AB = [Sx1x Sx1u]/[Sxx Sxu;Sxu' Suu]
-    if (Ae || Be){
-      AB1 = cbind(Sx1x, Sx1u)
-      AB2a = cbind(Sxx, Sxu)
-      AB2b = cbind(t(Sxu), Suu)
-      AB2 = rbind(AB2a, AB2b)
+    AB1 = cbind(Sx1x, Sx1u)
+    AB2a = cbind(Sxx, Sxu)
+    AB2b = cbind(t(Sxu), Suu)
+    AB2 = rbind(AB2a, AB2b)
 
-      AB = AB1 %*% solve(AB2)
-    }
+    AB = AB1 %*% solve(AB2)
 
     # Matrix A
     A = AB[,1:nx]
@@ -141,14 +139,12 @@ ABCDQR_em <- function(y,u,Ai,Bi,Ci,Di,Qi,Ri,m1i,P1i,nx,ny,nu,
     }
 
     # Matrix Q
-    if (Qe){
-      M1 = Sx1x %*% t(A)
-      M2 = Sx1u %*% t(B)
-      M3 = A %*% Sxu %*% t(B)
-      Q = Sx1x1 - M1 - t(M1) - M2 - t(M2) + M3 + t(M3) + A %*% Sxx %*% t(A) + B %*% Suu %*% t(B)
-      Q = 1/nt*Q
-      Q = (Q + t(Q))/2 # to make sure it's a symmetric matrix
-    }
+    M1 = Sx1x %*% t(A)
+    M2 = Sx1u %*% t(B)
+    M3 = A %*% Sxu %*% t(B)
+    Q = Sx1x1 - M1 - t(M1) - M2 - t(M2) + M3 + t(M3) + A %*% Sxx %*% t(A) + B %*% Suu %*% t(B)
+    Q = 1/nt*Q
+    Q = (Q + t(Q))/2 # to make sure it's a symmetric matrix
     for (i in 1:nx){
       for (j in 1:nx){
         if (Qe[i,j] == 0){Q[i,j] = Qi[i,j]}
@@ -157,14 +153,12 @@ ABCDQR_em <- function(y,u,Ai,Bi,Ci,Di,Qi,Ri,m1i,P1i,nx,ny,nu,
 
     # Matrix CD
     # CD = [Syx Syu]/[Sxx Sxu;Sxu' Suu]
-    if (Ce || De){
-      CD1 = cbind(Syx, Syu)
-      CD2a = cbind(Sxx, Sxu)
-      CD2b = cbind(t(Sxu), Suu)
-      CD2 = rbind(CD2a, CD2b)
+    CD1 = cbind(Syx, Syu)
+    CD2a = cbind(Sxx, Sxu)
+    CD2b = cbind(t(Sxu), Suu)
+    CD2 = rbind(CD2a, CD2b)
 
-      CD = CD1 %*% solve(CD2)
-    }
+    CD = CD1 %*% solve(CD2)
 
     # Matrix C
     C = matrix(CD[,1:nx], nrow = ny)
@@ -183,14 +177,12 @@ ABCDQR_em <- function(y,u,Ai,Bi,Ci,Di,Qi,Ri,m1i,P1i,nx,ny,nu,
     }
 
     # Matrix R
-    if (Re){
-      M1 = Syx %*% t(C)
-      M2 = Syu %*% t(D)
-      M3 = C %*% Sxu %*% t(D)
-      R = Syy - t(M1) - M1 - t(M2) - M2 + t(M3) + M3 + C %*% Sxx %*% t(C) + D %*% Suu %*% t(D)
-      R = 1/nt*R
-      R = (R + t(R))/2 # to make sure it's a symmetric matrix
-    }
+    M1 = Syx %*% t(C)
+    M2 = Syu %*% t(D)
+    M3 = C %*% Sxu %*% t(D)
+    R = Syy - t(M1) - M1 - t(M2) - M2 + t(M3) + M3 + C %*% Sxx %*% t(C) + D %*% Suu %*% t(D)
+    R = 1/nt*R
+    R = (R + t(R))/2 # to make sure it's a symmetric matrix
     for (i in 1:ny){
       for (j in 1:ny){
         if (Re[i,j] == 0){R[i,j] = Ri[i,j]}

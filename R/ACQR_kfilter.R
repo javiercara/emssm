@@ -3,6 +3,12 @@
 #'
 #' Kalman filter for state space model
 #'
+#'   x_{t+1} = Ax_{t} + w_{t}
+#'
+#'   y_{t}   = Cx_{t} + v_{t}
+#'
+#'   cov(w_{t},v_{t}) = [Q 0;0 R]
+#'
 #' @param y: data. Matrix ny*nt
 #' A: matrix nx*nx
 #' C: matrix ny*nx

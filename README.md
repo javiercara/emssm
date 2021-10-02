@@ -1,5 +1,5 @@
 # emssm
-Estimation of Multivariate State Space Models
+Estimation of Multivariate State Space Models using the EM algorithm
 
 ## Install
 	- install.packages("devtools")
