@@ -11,7 +11,7 @@
 #' @return
 #' y by rows, m = nrow(y), nt = ncol(y)
 #'
-ACQR_predict <- function(y,A,C,Q,R,m1,P1,nx,ny,n_ahead,conf_level=0.95){
+ACQR_predict <- function(y,A,C,Q,R,m1,P1,nx,ny,n_ahead=0,conf_level=0.95){
 
   # data as matrices
   y = as.matrix(y)
@@ -21,39 +21,57 @@ ACQR_predict <- function(y,A,C,Q,R,m1,P1,nx,ny,n_ahead,conf_level=0.95){
   nt = ncol(y)
 
   A <- matrix(A, nrow = nx, ncol = nx)
-  #C <-
+  C <- matrix(C, nrow=ny, ncol = nx)
   Q <- matrix(Q, nrow = nx, ncol = nx)
   R <- matrix(R, nrow = ny, ncol = ny)
   x10 <- m1
   P10 <- matrix(P1, nrow = nx, ncol = nx)
 
-  # predicted values
-  yp <- array(0,c(ny,n_ahead))
-  # root mean square perdiction errors
-  rmspe <- array(0,c(ny,n_ahead))
-
   # kalman filter
   kf <- ACQR_kfilter(y,A,C,Q,R,x10,P10,nx,ny)
 
-  # forecasting
-  xp <- kf$xtt1[,nt+1]
-  Pp <- kf$Ptt1[,,nt+1]
-  for (t in 1:n_ahead){
-
+  if (n_ahead == 0){
     # predictions
-    yp[,t] <- C %*% xp
+    yp <- C %*% kf$xtt1[,1:nt]
 
-    #  innovations
-    St = C %*% Pp %*% t(C) + R # variance
-    rmspe[,t] <- sqrt(diag(St))
-
-    # Kalman gain
-    Kt = Pp %*% t(C) %*% solve(St)
-
-    # values for the next step
-    xp = A %*% xp
-    Pp = A %*% ( Pp - Kt %*% C %*% Pp ) %*% t(A) + Q
+    # root mean square prediction errors
+    rmspe <- array(0,c(ny,nt))
+    for (t in 1:nt){
+      if (ny == 1){
+        rmspe[,t] <- sqrt(kf$St[,,t])
+      } else{
+        rmspe[,t] <- sqrt(diag(kf$St[,,t]))
+      }
+    }
   }
+
+  if (n_ahead > 0){
+    # predicted values
+    yp <- array(0,c(ny,n_ahead))
+    # root mean square prediction errors
+    rmspe <- array(0,c(ny,n_ahead))
+
+    # forecasting
+    xp <- kf$xtt1[,nt+1]
+    Pp <- kf$Ptt1[,,nt+1]
+    for (t in 1:n_ahead){
+
+      # predictions
+      yp[,t] <- C %*% xp
+
+      #  innovations
+      St = C %*% Pp %*% t(C) + R # variance
+      rmspe[,t] <- sqrt(diag(St))
+
+      # Kalman gain
+      Kt = Pp %*% t(C) %*% solve(St)
+
+      # values for the next step
+      xp = A %*% xp
+      Pp = A %*% ( Pp - Kt %*% C %*% Pp ) %*% t(A) + Q
+    }
+  }
+
   # prediction interval
   alpha = 1-conf_level
   ypi1 = yp - qnorm(1-alpha/2)*rmspe

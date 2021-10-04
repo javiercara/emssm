@@ -4,7 +4,7 @@
 \alias{ACQR_predict}
 \title{forecasting function}
 \usage{
-ACQR_predict(y, A, C, Q, R, m1, P1, nx, ny, n_ahead, conf_level = 0.95)
+ACQR_predict(y, A, C, Q, R, m1, P1, nx, ny, n_ahead = 0, conf_level = 0.95)
 }
 \arguments{
 \item{y}{data}
